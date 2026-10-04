@@ -1,0 +1,455 @@
+/* Collision · layout and theming on top of the shared Wonderlab kit. */
+:root {
+  --wl-accent: #a78bfa;
+  --wl-accent-ink: #170d33;
+  --edge: max(var(--wl-inset), env(safe-area-inset-left));
+  --edge-r: max(var(--wl-inset), env(safe-area-inset-right));
+  --edge-t: max(var(--wl-inset), env(safe-area-inset-top));
+  --edge-b: max(var(--wl-inset), calc(env(safe-area-inset-bottom) + 8px));
+  --dock-h: 58px;
+  --above-dock: calc(var(--edge-b) + var(--dock-h) + 12px);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  color: var(--wl-fg);
+  font: 400 14px/1.4 var(--wl-font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- canvases ---------- */
+.stage,
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.stage {
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+.stage.is-dragging {
+  cursor: grabbing;
+}
+.stage.is-fling {
+  cursor: crosshair;
+}
+.overlay {
+  pointer-events: none;
+}
+
+/* ---------- galaxy labels (positioned from script) ---------- */
+.labels {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.78);
+  font: 600 10.5px/1 var(--wl-font);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 0.6s var(--wl-ease);
+  will-change: transform;
+}
+.label::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, currentColor);
+}
+.label.is-on {
+  opacity: 1;
+}
+
+/* ---------- title block (below the home chip) ---------- */
+.title {
+  position: fixed;
+  top: calc(var(--edge-t) + 52px);
+  left: var(--edge);
+  max-width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.85);
+}
+.title__name {
+  margin: 0;
+  font: 700 28px/1.05 var(--wl-font-display);
+  letter-spacing: -0.015em;
+}
+.title__scene {
+  margin: 8px 0 0;
+  color: var(--wl-fg);
+  font: 500 15px/1.3 var(--wl-font-display);
+}
+.title__desig {
+  margin: 4px 0 0;
+  color: var(--wl-fg-dim);
+  font: 500 11px/1.3 var(--wl-mono);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- scenario switcher ---------- */
+.scenes {
+  position: fixed;
+  top: var(--edge-t);
+  right: var(--edge-r);
+  display: flex;
+  gap: 6px;
+}
+.scene {
+  gap: 7px;
+}
+.scene__key {
+  display: inline-grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  font: 600 10px/1 var(--wl-mono);
+}
+.scene[aria-pressed="true"] .scene__key {
+  background: rgba(23, 13, 51, 0.18);
+}
+
+/* ---------- documentary caption ---------- */
+.caption {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--above-dock) + 52px);
+  width: max-content;
+  max-width: calc(100vw - 48px);
+  margin: 0;
+  color: #fff;
+  font: 500 17px/1.35 var(--wl-font-display);
+  letter-spacing: 0.005em;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.75);
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+}
+.caption.is-on {
+  opacity: 1;
+  transition: opacity 0.9s var(--wl-ease), visibility 0.35s;
+}
+.caption.is-off {
+  transition: opacity 1.4s var(--wl-ease), visibility 0.35s;
+}
+.caption__time {
+  margin-right: 10px;
+  color: var(--wl-accent);
+  font: 600 12px/1 var(--wl-mono);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- dock: transport, timeline, speed, tools ---------- */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: var(--edge-b);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  width: min(940px, calc(100vw - 32px));
+  min-height: var(--dock-h);
+  padding: 10px 12px;
+  transform: translateX(-50%);
+}
+.dock__transport,
+.dock__tools {
+  display: flex;
+  gap: 6px;
+}
+.dock__timeline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.timeline {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.timeline__marks {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22px;
+  pointer-events: none;
+}
+.mark {
+  position: absolute;
+  top: 6px;
+  width: 2px;
+  height: 10px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.55);
+  z-index: 1;
+}
+.mark--merge {
+  top: 5px;
+  width: 6px;
+  height: 12px;
+  margin-left: -3px;
+  border-radius: 3px;
+  background: #ffd9a6;
+}
+.timeline .wl-range {
+  position: relative;
+}
+.clock {
+  min-width: 9.5ch;
+  color: var(--wl-fg);
+  font: 600 14px/1 var(--wl-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.clock__unit,
+.clock__suffix {
+  color: var(--wl-fg-dim);
+  font-size: 11px;
+  font-weight: 500;
+}
+.clock__suffix:not(:empty) {
+  margin-left: 4px;
+}
+.dock__speed {
+  display: grid;
+  grid-template-columns: auto 96px 4.5ch;
+  align-items: center;
+  gap: 10px;
+}
+.dock__speed .wl-value {
+  text-align: right;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon--play {
+  fill: currentColor;
+  stroke-width: 1.5;
+}
+#play .icon--play,
+#play.is-paused .icon--pause {
+  display: none;
+}
+#play.is-paused .icon--play {
+  display: block;
+}
+
+/* ---------- settings popover ---------- */
+.settings {
+  position: fixed;
+  right: max(var(--edge-r), calc((100vw - 940px) / 2));
+  bottom: var(--above-dock);
+  display: grid;
+  gap: 12px;
+  width: 248px;
+  box-sizing: border-box;
+}
+.settings[hidden] {
+  display: none;
+}
+.settings label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.settings .wl-field {
+  margin: 0;
+}
+
+/* ---------- hint sits above the dock ---------- */
+.wl-hint {
+  bottom: var(--above-dock);
+}
+
+/* ---------- dialog extras ---------- */
+.keys {
+  display: grid;
+  gap: 7px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.keys li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13.5px;
+}
+.keys li > span:first-child {
+  color: var(--wl-fg-dim);
+}
+.about__tech {
+  color: var(--wl-fg-dim) !important;
+  font-size: 13px;
+}
+
+/* ---------- fallback ---------- */
+.wl-fallback h2 {
+  margin: 0 0 8px;
+  font: 700 22px/1.2 var(--wl-font-display);
+}
+.wl-fallback p {
+  max-width: 440px;
+  margin: 0 auto;
+  color: var(--wl-fg-dim);
+}
+
+/* ---------- medium widths: drop the speed label ---------- */
+@media (max-width: 980px) {
+  .dock__speed .wl-label {
+    display: none;
+  }
+  .dock__speed {
+    grid-template-columns: 80px 4.5ch;
+  }
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  :root {
+    --dock-h: 104px;
+  }
+  .title {
+    top: calc(var(--edge-t) + 46px);
+  }
+  .title__name {
+    font-size: 22px;
+  }
+  .title__scene {
+    margin-top: 5px;
+    font-size: 13.5px;
+  }
+  .title__desig {
+    font-size: 10px;
+  }
+  .scenes {
+    top: auto;
+    left: var(--edge);
+    right: var(--edge-r);
+    bottom: var(--above-dock);
+    justify-content: space-between;
+    gap: 5px;
+  }
+  .scene {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 6px;
+    font-size: 12px;
+  }
+  .scene__key {
+    display: none;
+  }
+  .caption {
+    top: calc(var(--edge-t) + 146px);
+    bottom: auto;
+    font-size: 15px;
+    white-space: normal;
+  }
+  .wl-hint {
+    bottom: calc(var(--above-dock) + 46px);
+    font-size: 12px;
+  }
+  /* The timeline gets its own full-width row: scrubbing time is the main control. */
+  .dock {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "timeline timeline timeline"
+      "transport speed tools";
+    gap: 8px 10px;
+    padding: 10px 12px;
+  }
+  .dock__transport { grid-area: transport; }
+  .dock__timeline { grid-area: timeline; gap: 10px; }
+  .dock__speed {
+    grid-area: speed;
+    grid-template-columns: minmax(40px, 1fr) 4.5ch;
+    gap: 6px;
+  }
+  .dock__speed .wl-label {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .dock__tools {
+    grid-area: tools;
+    justify-content: flex-end;
+  }
+  .clock {
+    min-width: 8ch;
+    font-size: 13px;
+  }
+  .settings {
+    left: var(--edge);
+    right: var(--edge-r);
+    bottom: calc(var(--above-dock) + 46px);
+    width: auto;
+  }
+}
+
+@media (max-width: 640px) and (max-height: 560px) {
+  .title__desig,
+  .caption {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caption.is-on,
+  .caption.is-off,
+  .label {
+    transition-duration: 0.01ms;
+  }
+}
+
+/* ---------- hint wording: keys on desktop, gestures on touch screens ---------- */
+.hint--touch {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  .hint--fine {
+    display: none;
+  }
+  .hint--touch {
+    display: inline;
+  }
+}

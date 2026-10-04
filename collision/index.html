@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Collision · Wonderlab</title>
+  <meta name="description" content="Two spiral galaxies, a quarter-million stars, one gravitational dance: a real-time GPU simulation of colliding galaxies.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="../shared/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../shared/wonderlab.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="stage" class="stage" role="img" aria-label="Simulated galaxy collision"></canvas>
+  <canvas id="overlay" class="overlay" aria-hidden="true"></canvas>
+  <div id="labels" class="labels wl-ui" aria-hidden="true"></div>
+
+  <a class="wl-home wl-ui" href="../index.html" aria-label="Back to the Wonderlab gallery"><span class="wl-home__arrow" aria-hidden="true">←</span><span>Wonderlab</span></a>
+
+  <header class="title wl-ui">
+    <h1 class="title__name">Collision</h1>
+    <p class="title__scene" id="scene-title">The Antennae</p>
+    <p class="title__desig" id="scene-desig">NGC 4038 / 4039 · Corvus</p>
+  </header>
+
+  <nav class="scenes wl-ui" aria-label="Scenarios">
+    <button class="wl-btn wl-btn--glass scene" type="button" data-scene="antennae" aria-pressed="true"><span class="scene__key" aria-hidden="true">1</span>Antennae</button>
+    <button class="wl-btn wl-btn--glass scene" type="button" data-scene="mice" aria-pressed="false"><span class="scene__key" aria-hidden="true">2</span>Mice</button>
+    <button class="wl-btn wl-btn--glass scene" type="button" data-scene="cartwheel" aria-pressed="false"><span class="scene__key" aria-hidden="true">3</span>Cartwheel</button>
+    <button class="wl-btn wl-btn--glass scene" type="button" data-scene="milkomeda" aria-pressed="false"><span class="scene__key" aria-hidden="true">4</span>MW + M31</button>
+  </nav>
+
+  <p id="caption" class="caption wl-ui" aria-live="polite"></p>
+
+  <section class="dock wl-panel wl-ui" aria-label="Time controls">
+    <div class="dock__transport">
+      <button id="play" class="wl-btn wl-btn--icon" type="button" aria-label="Pause simulation">
+        <svg class="icon icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13M16 5.5v13"/></svg>
+        <svg class="icon icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.5 12z"/></svg>
+      </button>
+      <button id="restart" class="wl-btn wl-btn--icon" type="button" aria-label="Restart scenario">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12a6.5 6.5 0 1 0 2-4.7M5.5 4.5v3.3h3.3"/></svg>
+      </button>
+    </div>
+    <div class="dock__timeline">
+      <div class="timeline">
+        <div id="marks" class="timeline__marks" aria-hidden="true"></div>
+        <input id="timeline" class="wl-range" type="range" min="0" max="1000" step="1" value="0" aria-label="Timeline: drag to jump in time" aria-valuetext="0 million years">
+      </div>
+      <output id="clock" class="clock" for="timeline"><span id="clock-value">0</span> <span class="clock__unit">Myr</span><span id="clock-suffix" class="clock__suffix"></span></output>
+    </div>
+    <div class="dock__speed">
+      <label class="wl-label" for="speed">Speed</label>
+      <input id="speed" class="wl-range" type="range" min="-100" max="60" step="1" value="0">
+      <output id="speed-out" class="wl-value" for="speed">1.0×</output>
+    </div>
+    <div class="dock__tools">
+      <button id="fling" class="wl-btn wl-btn--icon" type="button" aria-pressed="false" aria-label="Fling a galaxy (F)">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="17" r="2.6"/><path d="M9.5 14.5 18 6M13 6h5v5"/></svg>
+      </button>
+      <button id="settings-btn" class="wl-btn wl-btn--icon" type="button" aria-expanded="false" aria-controls="settings" aria-label="View settings">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      </button>
+      <button class="wl-btn wl-btn--icon" type="button" data-wl-open="about" aria-label="About this piece">i</button>
+    </div>
+  </section>
+
+  <aside id="settings" class="settings wl-panel wl-ui" aria-label="View settings" hidden>
+    <div class="wl-row"><label for="opt-tag">Colour by galaxy <span class="wl-kbd">T</span></label><input id="opt-tag" type="checkbox" class="wl-switch"></div>
+    <div class="wl-row"><label for="opt-rotate">Auto-rotate</label><input id="opt-rotate" type="checkbox" class="wl-switch" checked></div>
+    <div class="wl-row"><label for="opt-labels">Labels</label><input id="opt-labels" type="checkbox" class="wl-switch" checked></div>
+    <div class="wl-row"><label for="opt-dust">Dust lanes</label><input id="opt-dust" type="checkbox" class="wl-switch" checked></div>
+    <div class="wl-row"><label for="opt-trails">Core orbits</label><input id="opt-trails" type="checkbox" class="wl-switch"></div>
+    <div class="wl-field">
+      <label class="wl-label" for="opt-stars">Stars</label>
+      <select id="opt-stars" class="wl-select">
+        <option value="65536">65,536</option>
+        <option value="131072">131,072</option>
+        <option value="262144">262,144</option>
+        <option value="524288">524,288</option>
+      </select>
+    </div>
+  </aside>
+
+  <div class="wl-hint wl-ui">
+    <span class="hint--fine">Drag to orbit · scroll or pinch to zoom · <span class="wl-kbd">F</span> fling a galaxy · <span class="wl-kbd">Space</span> pause</span>
+    <span class="hint--touch">Drag to orbit · pinch to zoom · tap ↗ to fling a galaxy</span>
+  </div>
+
+  <dialog id="about" class="wl-dialog" aria-labelledby="about-title">
+    <button class="wl-btn wl-btn--icon wl-dialog__close" type="button" data-wl-close aria-label="Close">✕</button>
+    <div class="wl-dialog__body">
+      <h2 id="about-title">Collision</h2>
+      <p>Every point of light here is a test particle in a <em>restricted N-body</em> simulation, the method Alar and Juri Toomre used in 1972 to show that the bridges and tails of interacting galaxies are made by tides. Each galaxy is a rigid gravitational potential (a dense bulge inside a broad dark-matter halo). The two cores pull on each other, and up to half a million massless stars feel both, advanced on your GPU by a time-symmetric leapfrog integrator several times per frame.</p>
+      <p><strong>Tidal tails.</strong> Tides stretch each disk along the line to its partner. On a prograde pass, where a disk spins the same way the pair orbits, stars on the far side keep pace with the passing galaxy long enough to be pulled free and stream away in long, curving tails, while the near side reaches out as a bridge.</p>
+      <p><strong>Stars almost never collide.</strong> If the Sun were a grain of sand 1 mm across, the nearest star would be another grain about 30 km away. The disks pass through each other and only gravity rearranges them. Vast gas clouds do collide, which is why real mergers trigger bursts of star formation: the pink knots are glowing hydrogen around newborn stars.</p>
+      <p><strong>Dark-matter halos</strong> outweigh the stars many times over; here each halo holds 13 times its bulge’s mass and keeps the rotation curve near 180–200 km/s. Overlapping halos drag on each other (dynamical friction), draining orbital energy, so each fly-by is followed by a closer one until the cores merge.</p>
+      <p><strong>Our future.</strong> Andromeda is about 2.5 million light-years away and closing at roughly 110 km/s. Hubble measurements (van der Marel et al., 2012) predicted a first passage about 4 billion years from now and a merger some 2 billion years later; a 2025 study that added Gaia data and the pull of M33 and the Large Magellanic Cloud put the odds of a merger within 10 billion years closer to 50:50.</p>
+      <h3>Controls</h3>
+      <ul class="keys">
+        <li><span>Drag · arrow keys</span><span>Orbit the camera</span></li>
+        <li><span>Scroll · pinch · <span class="wl-kbd">+</span> <span class="wl-kbd">−</span></span><span>Zoom</span></li>
+        <li><span><span class="wl-kbd">Space</span></span><span>Play or pause</span></li>
+        <li><span><span class="wl-kbd">R</span></span><span>Restart the scenario</span></li>
+        <li><span><span class="wl-kbd">1</span>–<span class="wl-kbd">4</span></span><span>Choose a scenario</span></li>
+        <li><span><span class="wl-kbd">[</span> <span class="wl-kbd">]</span></span><span>Slower · faster</span></li>
+        <li><span><span class="wl-kbd">F</span>, then drag</span><span>Fling a third galaxy</span></li>
+        <li><span><span class="wl-kbd">T</span></span><span>Colour stars by their home galaxy</span></li>
+        <li><span><span class="wl-kbd">H</span></span><span>Hide the interface</span></li>
+      </ul>
+      <p class="about__tech">Rendering: soft Gaussian star sprites in a 16-bit floating-point buffer, dust that dims and reddens the light behind it, bloom, and an asinh stretch like the one astronomers use for colour images.</p>
+    </div>
+  </dialog>
+
+  <script src="../shared/wonderlab.js" defer></script>
+  <script src="sim.js" defer></script>
+  <script src="shaders.js" defer></script>
+  <script src="render.js" defer></script>
+  <script src="camera.js" defer></script>
+  <script src="fling.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>

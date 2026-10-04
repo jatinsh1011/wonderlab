@@ -7,6 +7,7 @@ Experiments in what a browser can do, in plain HTML, CSS and JavaScript. No libr
 | # | Experiment | What it is |
 |---|---|---|
 | 01 | [Murmuration](murmuration/) | 12,000 starlings flocking over a marsh at dusk, each steering by its seven nearest neighbours. You fly the falcon. |
+| 02 | [Collision](collision/) | Two spiral galaxies colliding, star by star on the GPU: the Antennae, the Mice, the Cartwheel, and the Milky Way meeting Andromeda. |
 
 ## Run locally
 
