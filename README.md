@@ -8,6 +8,7 @@ Experiments in what a browser can do, in plain HTML, CSS and JavaScript. No libr
 |---|---|---|
 | 01 | [Murmuration](murmuration/) | 12,000 starlings flocking over a marsh at dusk, each steering by its seven nearest neighbours. You fly the falcon. |
 | 02 | [Collision](collision/) | Two spiral galaxies colliding, star by star on the GPU: the Antennae, the Mice, the Cartwheel, and the Milky Way meeting Andromeda. |
+| 03 | [Liquid Light](liquid-light/) | Paint with glowing fluid: a real-time Navier–Stokes simulation with multi-touch, kaleidoscope symmetry and an ink-on-paper mode. |
 
 ## Run locally
 

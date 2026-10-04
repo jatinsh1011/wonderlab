@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Liquid Light · Wonderlab</title>
+  <meta name="description" content="Paint with luminous fluid: a real-time Navier–Stokes simulation on your GPU, with kaleidoscope symmetry and an ink-on-paper mode.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="../shared/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../shared/wonderlab.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="stage" class="stage" role="img" aria-label="Glowing fluid that swirls wherever you paint"></canvas>
+
+  <a class="wl-home wl-ui" href="../index.html" aria-label="Back to the Wonderlab gallery"><span class="wl-home__arrow" aria-hidden="true">←</span><span>Wonderlab</span></a>
+
+  <header class="title wl-ui">
+    <h1 class="title__name">Liquid Light</h1>
+    <p class="title__tag">Paint with luminous fluid.</p>
+  </header>
+
+  <section class="dock wl-panel wl-ui" aria-label="Painting controls">
+    <div class="swatches" role="group" aria-label="Palette">
+      <button class="swatch swatch--neon" type="button" data-palette="0" aria-pressed="true" aria-label="Neon palette (1)"></button>
+      <button class="swatch swatch--aurora" type="button" data-palette="1" aria-pressed="false" aria-label="Aurora palette (2)"></button>
+      <button class="swatch swatch--lava" type="button" data-palette="2" aria-pressed="false" aria-label="Lava palette (3)"></button>
+      <button class="swatch swatch--ink" type="button" data-palette="3" aria-pressed="false" aria-label="Ink on paper (4)"></button>
+    </div>
+    <span class="dock__sep" aria-hidden="true"></span>
+    <button id="sym" class="wl-btn sym" type="button" aria-label="Kaleidoscope: off. Press S to change.">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/><circle cx="12" cy="12" r="2.2"/></svg>
+      <span id="sym-label" class="sym__label">Off</span>
+    </button>
+    <span class="dock__sep" aria-hidden="true"></span>
+    <div class="dock__actions">
+      <button id="burst" class="wl-btn wl-btn--icon" type="button" aria-label="Splash of colour (Space)">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9-1.9 5.1-1.9-5.1-5.1-1.9 5.1-1.9z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>
+      </button>
+      <button id="pause" class="wl-btn wl-btn--icon" type="button" aria-pressed="false" aria-label="Freeze the flow (P)">
+        <svg class="icon icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5v13M15.5 5.5v13"/></svg>
+        <svg class="icon icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.8v12.4L18.5 12z"/></svg>
+      </button>
+      <button id="clear" class="wl-btn wl-btn--icon" type="button" aria-label="Clear the canvas (C)">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12a6.5 6.5 0 1 0 2-4.7M5.5 4.5v3.3h3.3"/></svg>
+      </button>
+      <button id="snap" class="wl-btn wl-btn--icon" type="button" aria-label="Save a picture">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 8.5h3l1.6-2.2h5.8l1.6 2.2h3v10h-15z"/><circle cx="12" cy="13.3" r="3.2"/></svg>
+      </button>
+      <button id="settings-btn" class="wl-btn wl-btn--icon" type="button" aria-expanded="false" aria-controls="settings" aria-label="Fluid settings">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+      </button>
+      <button class="wl-btn wl-btn--icon" type="button" data-wl-open="about" aria-label="About this piece">i</button>
+    </div>
+  </section>
+
+  <aside id="settings" class="settings wl-panel wl-ui" aria-label="Fluid settings" hidden>
+    <div class="wl-field">
+      <div class="wl-row"><label class="wl-label" for="opt-curl">Swirl</label><output class="wl-value" id="opt-curl-out" for="opt-curl">30</output></div>
+      <input id="opt-curl" class="wl-range" type="range" min="0" max="60" step="1" value="30">
+    </div>
+    <div class="wl-field">
+      <div class="wl-row"><label class="wl-label" for="opt-fade">Fade</label><output class="wl-value" id="opt-fade-out" for="opt-fade">Medium</output></div>
+      <input id="opt-fade" class="wl-range" type="range" min="0" max="100" step="1" value="45">
+    </div>
+    <div class="wl-field">
+      <div class="wl-row"><label class="wl-label" for="opt-size">Brush</label><output class="wl-value" id="opt-size-out" for="opt-size">Medium</output></div>
+      <input id="opt-size" class="wl-range" type="range" min="0" max="100" step="1" value="40">
+    </div>
+    <div class="wl-row settings__switch"><label for="opt-bloom">Glow</label><input id="opt-bloom" type="checkbox" class="wl-switch" checked></div>
+    <div class="wl-row settings__switch"><label for="opt-idle">Paints by itself when idle</label><input id="opt-idle" type="checkbox" class="wl-switch" checked></div>
+    <div class="wl-field">
+      <label class="wl-label" for="opt-quality">Quality</label>
+      <select id="opt-quality" class="wl-select">
+        <option value="auto">Auto</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+    </div>
+  </aside>
+
+  <div class="wl-hint wl-ui">
+    <span class="hint--fine">Move to stir · drag to paint · <span class="wl-kbd">Space</span> splash · <span class="wl-kbd">S</span> kaleidoscope</span>
+    <span class="hint--touch">Drag with one or more fingers to paint</span>
+  </div>
+
+  <dialog id="about" class="wl-dialog" aria-labelledby="about-title">
+    <button class="wl-btn wl-btn--icon wl-dialog__close" type="button" data-wl-close aria-label="Close">✕</button>
+    <div class="wl-dialog__body">
+      <h2 id="about-title">Liquid Light</h2>
+      <p>What you're stirring is a real fluid simulation. Your GPU solves the <strong>Navier–Stokes equations</strong>, written down by Claude-Louis Navier in 1822 and George Gabriel Stokes in 1845, on a grid of tens of thousands of cells, sixty times a second.</p>
+      <p><strong>How a frame works.</strong> Every cell's velocity is carried along by the flow itself (<em>advection</em>). Then the solver makes the fluid incompressible: it measures how much each cell is gaining or losing fluid, solves for the pressure that would cancel it with twenty-odd Jacobi iterations, and subtracts that pressure's gradient. This is Jos Stam's "Stable Fluids" method from 1999, which stays stable at any time step.</p>
+      <p><strong>Why it keeps swirling.</strong> Numerical grids blur small eddies away. <em>Vorticity confinement</em> (Fedkiw, Stam &amp; Jensen, 2001) spins them back up, which is what gives the smoke its curls. The <em>Swirl</em> slider controls it.</p>
+      <p><strong>The light.</strong> The coloured dye rides on the flow at a much finer resolution than the velocity grid. It's shaded as if it were a glossy liquid surface, then given a soft glow. In <em>Ink</em> mode the dye absorbs light instead of emitting it, so colours mix like real watercolour: overlap blue and yellow and you get green.</p>
+      <p>Fun fact: nobody has proved that smooth solutions to these equations always exist in 3D. It's one of the Clay Institute's million-dollar Millennium Prize problems.</p>
+      <h3>Controls</h3>
+      <ul class="keys">
+        <li><span>Move · drag · touch</span><span>Stir and paint (multi-touch works)</span></li>
+        <li><span><span class="wl-kbd">Space</span></span><span>Splash of colour</span></li>
+        <li><span><span class="wl-kbd">S</span></span><span>Kaleidoscope: off, 2, 3, 4, 6, 8</span></li>
+        <li><span><span class="wl-kbd">1</span>–<span class="wl-kbd">4</span></span><span>Neon · Aurora · Lava · Ink</span></li>
+        <li><span><span class="wl-kbd">P</span></span><span>Freeze the flow</span></li>
+        <li><span><span class="wl-kbd">C</span></span><span>Clear</span></li>
+        <li><span><span class="wl-kbd">H</span></span><span>Hide the interface</span></li>
+      </ul>
+    </div>
+  </dialog>
+
+  <script src="../shared/wonderlab.js" defer></script>
+  <script src="fluid.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>

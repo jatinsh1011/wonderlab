@@ -1,0 +1,252 @@
+/* =====================================================================
+   Liquid Light · style.css
+   ===================================================================== */
+
+:root {
+  --wl-accent: #7cf4ff;
+  --wl-accent-ink: #03161b;
+  --edge: max(16px, env(safe-area-inset-left));
+  --edge-r: max(16px, env(safe-area-inset-right));
+  --edge-t: max(16px, env(safe-area-inset-top));
+  --edge-b: max(16px, env(safe-area-inset-bottom));
+  --title-ink: #fff;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #000;
+  color: var(--wl-fg);
+  font-family: var(--wl-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- title ---------- */
+.title {
+  position: fixed;
+  top: calc(var(--edge-t) + 50px);
+  left: var(--edge);
+  color: var(--title-ink);
+  pointer-events: none;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
+}
+.title__name {
+  margin: 0;
+  font: 700 26px/1.1 var(--wl-font-display);
+  letter-spacing: -0.02em;
+}
+.title__tag {
+  margin: 6px 0 0;
+  font-size: 14px;
+  opacity: 0.72;
+}
+
+/* ---------- dock ---------- */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: var(--edge-b);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.dock__sep {
+  width: 1px;
+  height: 22px;
+  background: var(--wl-border);
+}
+.dock__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.swatches {
+  display: flex;
+  gap: 8px;
+  padding-left: 2px;
+}
+.swatch {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sw);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: transform 0.2s var(--wl-ease), box-shadow 0.2s;
+}
+.swatch:hover {
+  transform: scale(1.08);
+}
+.swatch[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25), 0 0 0 2px #0b0c12, 0 0 0 4px var(--wl-accent);
+}
+.swatch:focus-visible {
+  outline: 2px solid var(--wl-accent);
+  outline-offset: 5px;
+}
+.swatch--neon {
+  --sw: conic-gradient(from 200deg, #ff2fd0, #7a5cff, #2fd2ff, #36ff9a, #fff35c, #ff5c2f, #ff2fd0);
+}
+.swatch--aurora {
+  --sw: radial-gradient(circle at 30% 30%, #b9ffd9 0 12%, transparent 45%), linear-gradient(150deg, #36ff9a, #2fd2ff 55%, #9b5cff);
+}
+.swatch--lava {
+  --sw: radial-gradient(circle at 65% 35%, #ffe08a 0 14%, transparent 48%), linear-gradient(160deg, #ffb02e, #ff4a1c 50%, #8a0f2e);
+}
+.swatch--ink {
+  --sw: radial-gradient(circle at 34% 40%, #1d4fa8 0 22%, transparent 24%), radial-gradient(circle at 66% 62%, #c4233f 0 20%, transparent 22%), #f3eee4;
+}
+
+.sym {
+  gap: 7px;
+  min-width: 72px;
+  padding: 0 12px 0 10px;
+}
+.sym__label {
+  font-variant-numeric: tabular-nums;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#pause .icon--play,
+#pause[aria-pressed="true"] .icon--pause {
+  display: none;
+}
+#pause[aria-pressed="true"] .icon--play {
+  display: block;
+}
+
+/* ---------- settings ---------- */
+.settings {
+  position: fixed;
+  right: var(--edge-r);
+  bottom: calc(var(--edge-b) + 66px);
+  width: 264px;
+}
+.settings[hidden] {
+  display: none;
+}
+.settings__switch {
+  margin: 12px 0;
+}
+
+/* ---------- hint ---------- */
+.wl-hint {
+  bottom: calc(var(--edge-b) + 66px);
+}
+.hint--touch {
+  display: none;
+}
+@media (hover: none) and (pointer: coarse) {
+  .hint--fine {
+    display: none;
+  }
+  .hint--touch {
+    display: inline;
+  }
+}
+
+/* ---------- dialog list ---------- */
+.keys {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.keys li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--wl-border);
+  font-size: 13.5px;
+}
+.keys li span:last-child {
+  color: var(--wl-fg-dim);
+  text-align: right;
+}
+
+/* ---------- ink on paper: dark text over the light canvas ---------- */
+body.is-paper {
+  --title-ink: #1c2030;
+  background: #f4f0e6;
+}
+body.is-paper .title {
+  text-shadow: none;
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  .title {
+    top: calc(var(--edge-t) + 46px);
+  }
+  .title__name {
+    font-size: 22px;
+  }
+  .title__tag {
+    font-size: 13px;
+  }
+  .dock {
+    left: var(--edge);
+    right: var(--edge-r);
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px 8px;
+    padding: 10px 12px;
+    border-radius: var(--wl-radius);
+    transform: none;
+  }
+  .dock__sep {
+    display: none;
+  }
+  .swatches {
+    gap: 10px;
+  }
+  .dock__actions {
+    flex-basis: 100%;
+    justify-content: space-between;
+  }
+  .settings {
+    left: var(--edge);
+    right: var(--edge-r);
+    bottom: calc(var(--edge-b) + 116px);
+    width: auto;
+  }
+  .wl-hint {
+    bottom: calc(var(--edge-b) + 116px);
+    font-size: 12.5px;
+  }
+}
+
+.wl-fallback p {
+  max-width: 34em;
+  margin: 0 auto;
+}
