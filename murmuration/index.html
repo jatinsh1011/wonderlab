@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Murmuration · Wonderlab</title>
+  <meta name="description" content="Thousands of starlings flock over a winter marsh at dusk, each steering by its seven nearest neighbours, and you fly the falcon that sends waves of panic through them.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="../shared/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../shared/wonderlab.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="wl-home wl-ui" href="../index.html" aria-label="Back to the Wonderlab gallery"><span class="wl-home__arrow" aria-hidden="true">←</span><span>Wonderlab</span></a>
+
+  <canvas id="scene" class="mm-scene" role="img" aria-label="A murmuration of thousands of starlings swirling over a reed marsh at dusk while a falcon hunts them. Move the pointer to steer the falcon; click or tap to make it dive."></canvas>
+
+  <header class="mm-title wl-ui">
+    <h1>Murmuration</h1>
+    <p class="mm-tagline">Ten thousand starlings, one mind. And you are the falcon.</p>
+    <p class="mm-stats" id="stats"></p>
+  </header>
+
+  <div class="mm-reticle wl-ui" id="reticle" aria-hidden="true"></div>
+
+  <aside id="panel" class="wl-panel wl-ui mm-panel" aria-label="Controls">
+    <div class="wl-row mm-panel__head">
+      <span class="wl-label">The flock</span>
+      <div class="mm-panel__actions">
+        <button id="sound" class="wl-btn wl-btn--icon" type="button" aria-pressed="false" aria-label="Sound">
+          <svg class="mm-ico mm-ico--off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none"/></svg>
+          <svg class="mm-ico mm-ico--on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.7 7.7 0 0 1 0 11" fill="none"/></svg>
+        </button>
+        <button class="wl-btn wl-btn--icon" type="button" data-wl-open="about" aria-label="About this piece">i</button>
+      </div>
+    </div>
+    <div class="wl-field">
+      <div class="wl-row"><label class="wl-label" for="birds">Starlings</label><output class="wl-value" id="birds-out" for="birds">12,000</output></div>
+      <input id="birds" class="wl-range" type="range" min="2000" max="20000" step="500" value="12000">
+    </div>
+    <div class="wl-field">
+      <div class="wl-row"><label class="wl-label" for="mood">Calm to chaotic</label><output class="wl-value" id="mood-out" for="mood">Restless</output></div>
+      <input id="mood" class="wl-range" type="range" min="0" max="100" value="45">
+    </div>
+    <div class="wl-field">
+      <div class="wl-row"><label class="wl-label" for="light">Light</label><output class="wl-value" id="light-out" for="light">Sunset</output></div>
+      <input id="light" class="wl-range" type="range" min="0" max="100" value="40">
+    </div>
+    <div class="wl-row mm-switch">
+      <label for="autopilot">Falcon hunts on its own</label>
+      <input id="autopilot" type="checkbox" class="wl-switch" checked>
+    </div>
+    <p class="mm-keys"><span><span class="wl-kbd">Space</span> stoop</span> <span><span class="wl-kbd">A</span> autopilot</span> <span><span class="wl-kbd">M</span> sound</span> <span><span class="wl-kbd">[</span> <span class="wl-kbd">]</span> light</span> <span><span class="wl-kbd">H</span> hide UI</span></p>
+  </aside>
+
+  <div class="mm-dock wl-ui">
+    <button id="stoop" class="wl-btn wl-btn--primary mm-stoop" type="button" aria-label="Stoop: send the falcon diving into the flock">
+      <svg class="mm-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 8.5 9.5 3 7l6.2-.6L12 3l2.8 3.4L21 7l-5.5 2.5z"/></svg>
+      <span>Stoop</span>
+    </button>
+    <button id="panel-toggle" class="wl-btn wl-btn--icon wl-btn--glass" type="button" aria-controls="panel" aria-expanded="false" aria-label="Controls">
+      <svg class="mm-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" fill="none"/><circle cx="16" cy="7" r="2" fill="none"/><circle cx="10" cy="17" r="2" fill="none"/></svg>
+    </button>
+  </div>
+
+  <div class="wl-hint wl-ui"><span class="mm-hint-mouse">Move to steer the falcon · Click to stoop · <span class="wl-kbd">Space</span></span><span class="mm-hint-touch">Drag to steer the falcon · Tap to stoop</span></div>
+
+  <dialog id="about" class="wl-dialog" aria-labelledby="about-title">
+    <button class="wl-btn wl-btn--icon wl-dialog__close" type="button" data-wl-close aria-label="Close">✕</button>
+    <div class="wl-dialog__body">
+      <h2 id="about-title">How a murmuration thinks</h2>
+      <p>A murmuration has no leader. In 2008 the STARFLAG team (Ballerini and colleagues) reconstructed starling flocks over Rome in 3D from stereo photographs and found that each bird responds to a fixed number of neighbours, six or seven, however near or far they are. This <em>topological</em> rule keeps the flock together as its density swells and thins. Here every starling looks up its 7 nearest neighbours through a spatial hash every few frames and steers by separation, alignment and cohesion, with a little noise of its own.</p>
+      <p>Local rules still add up to a single mind. Cavagna and colleagues (2010) found that changes in speed and heading are correlated across the whole flock however big it grows: the correlations are <em>scale-free</em>. A turn that starts at one edge sweeps across the flock as a wave, measured in later work at roughly 20 to 40 metres per second.</p>
+      <p>The falcon is the reason it matters. Birds closest to a peregrine dodge, and their neighbours copy the move a beat later, so "agitation waves" ripple outward; Procaccini and colleagues (2011) recorded them over Rome. The dark bands are birds banking: tilted wings show more of themselves to us. When the falcon strikes, the flock bursts apart around it in a flash expansion, then flows back together.</p>
+      <p>Why at dusk? Starlings gather above their winter roost in the last light before dropping into the reeds for the night. A 2017 citizen-science survey of thousands of UK murmurations (Goodenough and colleagues) concluded that safety in numbers against predators is the most likely reason they form.</p>
+      <p>Under the hood: the flock lives on the CPU in typed arrays. Positions are hashed into a uniform grid for the nearest-neighbour search, the falcon's threat spreads as an excitable wave over the neighbour graph, and WebGL2 draws every bird as instanced geometry, a body and two flapping wings banked into its turn. Birds land in a 4x multisampled coverage layer over an HDR sky with bloom and a filmic tone curve. The water reflects the flock through its own ripples.</p>
+      <h3>Controls</h3>
+      <p><strong>Move</strong> the pointer (or drag) to steer the falcon. <strong>Click</strong> or tap to stoop, a diving strike at the bird under the pointer. <span class="wl-kbd">Space</span> stoops into the heart of the flock. <span class="wl-kbd">A</span> toggles the falcon's own hunting, <span class="wl-kbd">M</span> toggles sound, <span class="wl-kbd">[</span> and <span class="wl-kbd">]</span> move the light toward golden hour or nightfall, and <span class="wl-kbd">H</span> hides the interface.</p>
+    </div>
+  </dialog>
+
+  <div id="fallback" class="wl-fallback" hidden>
+    <div class="mm-fallback">
+      <h2>The starlings can't fly here</h2>
+      <p>Murmuration needs WebGL2, which this browser or device isn't providing. A current version of Chrome, Edge, Firefox or Safari with hardware acceleration switched on will bring the flock in.</p>
+      <p class="mm-fallback__detail" id="fallback-detail"></p>
+      <a class="wl-btn" href="../index.html">Back to Wonderlab</a>
+    </div>
+  </div>
+
+  <script src="../shared/wonderlab.js" defer></script>
+  <script src="flock.js" defer></script>
+  <script src="render.js" defer></script>
+  <script src="audio.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>

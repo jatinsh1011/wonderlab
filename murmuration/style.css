@@ -1,0 +1,282 @@
+/* Murmuration: piece styles. Chrome comes from ../shared/wonderlab.css. */
+
+:root {
+  --wl-accent: #ffb38a;
+  --wl-accent-ink: #2a1307;
+  --mm-top: calc(max(var(--wl-inset), env(safe-area-inset-top)) + 52px);
+  --mm-left: max(var(--wl-inset), env(safe-area-inset-left));
+  --mm-right: max(var(--wl-inset), env(safe-area-inset-right));
+  --mm-bottom: max(var(--wl-inset), env(safe-area-inset-bottom));
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #07070d;
+  color: var(--wl-fg);
+  font-family: var(--wl-font);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mm-scene {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---------- title block (under the home chip) ---------- */
+.mm-title {
+  position: fixed;
+  top: var(--mm-top);
+  left: var(--mm-left);
+  z-index: 10;
+  max-width: min(440px, calc(100vw - 32px));
+  pointer-events: none;
+  text-shadow: 0 1px 14px rgba(5, 6, 14, 0.55), 0 0 2px rgba(5, 6, 14, 0.35);
+}
+.mm-title h1 {
+  margin: 0;
+  font: 700 clamp(28px, 3.1vw, 42px)/1.02 var(--wl-font-display);
+  letter-spacing: -0.025em;
+}
+.mm-tagline {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font: 400 15px/1.4 var(--wl-font);
+}
+.mm-stats {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.56);
+  font: 500 11.5px/1.3 var(--wl-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- controls ---------- */
+.mm-dock {
+  position: fixed;
+  right: var(--mm-right);
+  bottom: var(--mm-bottom);
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.mm-stoop {
+  min-height: 40px;
+  padding: 0 18px 0 14px;
+  box-shadow: 0 8px 28px rgba(255, 140, 90, 0.28);
+}
+.mm-dock .wl-btn--icon {
+  width: 40px;
+  min-height: 40px;
+}
+.mm-ico {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.mm-stoop .mm-ico {
+  stroke-width: 1.2;
+}
+
+.mm-panel {
+  position: fixed;
+  right: var(--mm-right);
+  bottom: calc(var(--mm-bottom) + 52px);
+  z-index: 20;
+  width: 296px;
+  max-height: calc(100vh - var(--mm-top) - 140px);
+  max-height: calc(100dvh - var(--mm-top) - 140px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.35s var(--wl-ease), transform 0.35s var(--wl-ease), visibility 0.35s;
+}
+.mm-panel.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.mm-panel__head {
+  margin-bottom: 2px;
+}
+.mm-panel__actions {
+  display: flex;
+  gap: 6px;
+}
+.mm-panel__actions .wl-btn--icon {
+  width: 32px;
+  min-height: 32px;
+  font: 600 14px/1 var(--wl-font-display);
+}
+.mm-panel__actions .mm-ico {
+  width: 16px;
+  height: 16px;
+}
+#sound .mm-ico--on,
+#sound.is-on .mm-ico--off {
+  display: none;
+}
+#sound.is-on .mm-ico--on {
+  display: block;
+}
+.mm-switch {
+  margin: 14px 0 4px;
+  font: 500 13px/1.3 var(--wl-font);
+}
+.mm-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--wl-border);
+  color: var(--wl-fg-dim);
+  font: 400 12px/1.6 var(--wl-font);
+}
+.mm-keys > span {
+  white-space: nowrap;
+}
+
+/* ---------- falcon reticle & touch ripples ---------- */
+.mm-reticle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s var(--wl-ease), visibility 0.4s;
+}
+.mm-reticle.is-on {
+  opacity: 1;
+}
+.mm-reticle::before,
+.mm-reticle::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+.mm-reticle::before {
+  left: -17px;
+  top: -17px;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid color-mix(in srgb, var(--wl-accent) 70%, transparent);
+  box-shadow: 0 0 12px rgba(255, 170, 120, 0.25);
+}
+.mm-reticle::after {
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  background: var(--wl-accent);
+}
+.mm-reticle.is-strike::before {
+  animation: mm-strike 0.55s var(--wl-ease);
+}
+@keyframes mm-strike {
+  0% { scale: 1; opacity: 1; }
+  35% { scale: 0.45; opacity: 1; }
+  100% { scale: 1; opacity: 1; }
+}
+.mm-tap {
+  position: fixed;
+  left: -30px;
+  top: -30px;
+  z-index: 5;
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--wl-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: mm-tap 0.7s var(--wl-ease) forwards;
+}
+@keyframes mm-tap {
+  from { scale: 1.2; opacity: 0.9; }
+  to { scale: 0.25; opacity: 0; }
+}
+
+/* ---------- hint ---------- */
+.mm-hint-touch {
+  display: none;
+}
+@media (pointer: coarse) {
+  .mm-hint-mouse { display: none; }
+  .mm-hint-touch { display: inline; }
+}
+/* no keyboard to speak of: the key legend would only be noise */
+@media (hover: none) and (pointer: coarse) {
+  .mm-keys { display: none; }
+}
+
+/* ---------- fallback ---------- */
+.wl-fallback[hidden] {
+  display: none;
+}
+.mm-fallback {
+  max-width: 460px;
+}
+.mm-fallback h2 {
+  margin: 0 0 10px;
+  font: 700 26px/1.2 var(--wl-font-display);
+}
+.mm-fallback p {
+  margin: 0 0 14px;
+  color: var(--wl-fg-dim);
+}
+.mm-fallback__detail {
+  color: var(--wl-fg-faint);
+  font: 400 11px/1.4 var(--wl-mono);
+}
+.mm-fallback__detail:empty {
+  display: none;
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 600px) {
+  .mm-title h1 { font-size: 26px; }
+  .mm-tagline { margin-top: 6px; font-size: 13px; }
+  .mm-stats { margin-top: 6px; font-size: 10.5px; }
+  .mm-panel {
+    left: var(--mm-left);
+    width: auto;
+    bottom: calc(var(--mm-bottom) + 54px);
+  }
+  .wl-hint {
+    bottom: calc(var(--mm-bottom) + 58px);
+    max-width: calc(100vw - 32px);
+    white-space: nowrap;
+    font-size: 12.5px;
+  }
+}
+@media (max-height: 520px) {
+  .mm-tagline,
+  .mm-stats { display: none; }
+  .mm-panel { max-height: calc(100vh - var(--mm-top) - 70px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-panel,
+  .mm-reticle { transition-duration: 0.01ms; }
+  .mm-reticle.is-strike::before { animation: none; }
+  .mm-tap { animation-duration: 0.3s; }
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Wonderlab</title>
+  <meta name="description" content="Experiments in plain HTML, CSS and JavaScript. No libraries, no images, no build step: every pixel is computed live in your browser.">
+  <meta name="theme-color" content="#09090d">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="shared/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shared/wonderlab.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="index.html">
+        <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand-g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7cf4ff"/>
+              <stop offset="0.5" stop-color="#a78bfa"/>
+              <stop offset="1" stop-color="#ff7ab6"/>
+            </linearGradient>
+          </defs>
+          <circle cx="32" cy="32" r="21" fill="none" stroke="url(#brand-g)" stroke-width="7"/>
+          <circle cx="32" cy="32" r="6" fill="#fff"/>
+        </svg>
+        <span>Wonderlab</span>
+      </a>
+      <span class="top__meta">HTML · CSS · JS</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Experiments in <span>what a browser can do.</span></h1>
+        <p class="lede">Plain HTML, CSS and JavaScript. No libraries, no images, no build step: every pixel is computed live, right in your browser.</p>
+      </section>
+
+      <section class="work" aria-labelledby="work-title">
+        <div class="work__head">
+          <h2 id="work-title">Experiments</h2>
+          <span class="work__count">01</span>
+        </div>
+
+        <ol class="pieces">
+          <!-- To add an experiment: copy this <li>, then change the link, images, text and --accent. -->
+          <li>
+            <a class="piece" href="murmuration/index.html" style="--accent: #ffb38a" aria-label="Open Murmuration: ten thousand starlings, one mind, and you are the falcon">
+              <span class="piece__media">
+                <img src="assets/thumbs/murmuration.jpg" alt="" width="1440" height="900" onerror="this.remove()">
+                <img class="piece__alt" src="assets/thumbs/murmuration-alt.jpg" alt="" width="1440" height="900" loading="lazy" onerror="this.remove()">
+              </span>
+              <span class="piece__body">
+                <span class="piece__num">01</span>
+                <span class="piece__title">Murmuration</span>
+                <span class="piece__desc">Ten thousand starlings, one mind. And you are the falcon.</span>
+                <span class="piece__detail">12,000 starlings over a marsh at dusk, each steering by its seven nearest neighbours. Move to hunt, click to dive.</span>
+                <span class="piece__foot">
+                  <span class="piece__tags"><span>Flocking</span><span>WebGL2</span><span>Web Audio</span></span>
+                  <span class="piece__cta">Open <span class="piece__arrow" aria-hidden="true">→</span></span>
+                </span>
+              </span>
+            </a>
+          </li>
+        </ol>
+
+        <p class="soon"><span class="soon__dot" aria-hidden="true"></span>More experiments on the way.</p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>Opens straight from disk. No server, no install.</span>
+      <span>Press <span class="wl-kbd">H</span> inside an experiment to hide its interface.</span>
+    </footer>
+  </div>
+</body>
+</html>

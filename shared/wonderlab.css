@@ -1,0 +1,401 @@
+/* =====================================================================
+   Wonderlab — shared chrome
+   A tiny UI kit every experiment links to, so the ten pieces feel like
+   one family. Theme an experiment by overriding --wl-accent (and
+   --wl-accent-ink) on :root in its own style.css. The art itself is
+   each experiment's business; this file only styles the chrome.
+   ===================================================================== */
+
+:root {
+  --wl-accent: #7cf4ff;
+  --wl-accent-ink: #03161b;
+  --wl-fg: rgba(255, 255, 255, 0.94);
+  --wl-fg-dim: rgba(255, 255, 255, 0.64);
+  --wl-fg-faint: rgba(255, 255, 255, 0.4);
+  --wl-glass: rgba(10, 12, 20, 0.56);
+  --wl-glass-strong: rgba(10, 12, 20, 0.84);
+  --wl-border: rgba(255, 255, 255, 0.12);
+  --wl-border-strong: rgba(255, 255, 255, 0.24);
+  --wl-radius: 14px;
+  --wl-radius-sm: 9px;
+  --wl-inset: 16px;
+  --wl-font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --wl-font-display: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --wl-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --wl-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --wl-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  --wl-blur: blur(18px) saturate(150%);
+}
+
+/* ---------- immersive mode: H hides every .wl-ui element ---------- */
+.wl-ui {
+  transition: opacity 0.35s var(--wl-ease), visibility 0.35s;
+}
+body.wl-ui-hidden .wl-ui {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ---------- home chip (top-left, always) ---------- */
+.wl-home {
+  position: fixed;
+  top: max(var(--wl-inset), env(safe-area-inset-top));
+  left: max(var(--wl-inset), env(safe-area-inset-left));
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 15px 0 12px;
+  border: 1px solid var(--wl-border);
+  border-radius: 999px;
+  background: var(--wl-glass);
+  -webkit-backdrop-filter: var(--wl-blur);
+  backdrop-filter: var(--wl-blur);
+  color: var(--wl-fg);
+  font: 600 13px/1 var(--wl-font);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: opacity 0.35s var(--wl-ease), visibility 0.35s, background 0.2s, border-color 0.2s;
+}
+.wl-home:hover {
+  background: var(--wl-glass-strong);
+  border-color: var(--wl-border-strong);
+}
+.wl-home__arrow {
+  display: inline-block;
+  color: var(--wl-accent);
+  transition: transform 0.25s var(--wl-ease);
+}
+.wl-home:hover .wl-home__arrow {
+  transform: translateX(-3px);
+}
+
+/* ---------- panels & labels ---------- */
+.wl-panel {
+  padding: 14px 16px;
+  border: 1px solid var(--wl-border);
+  border-radius: var(--wl-radius);
+  background: var(--wl-glass);
+  -webkit-backdrop-filter: var(--wl-blur);
+  backdrop-filter: var(--wl-blur);
+  box-shadow: var(--wl-shadow);
+  color: var(--wl-fg);
+  font: 400 13px/1.45 var(--wl-font);
+}
+.wl-label {
+  display: block;
+  color: var(--wl-fg-dim);
+  font: 600 11px/1.2 var(--wl-font);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.wl-value {
+  color: var(--wl-fg);
+  font: 500 12px/1 var(--wl-mono);
+  font-variant-numeric: tabular-nums;
+}
+.wl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.wl-field {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+/* ---------- buttons ---------- */
+.wl-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--wl-border-strong);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--wl-fg);
+  font: 600 13px/1 var(--wl-font);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s var(--wl-ease);
+}
+.wl-btn:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+.wl-btn:active {
+  transform: scale(0.96);
+}
+.wl-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  transform: none;
+}
+.wl-btn--primary,
+.wl-btn[aria-pressed="true"],
+.wl-btn.is-active {
+  border-color: transparent;
+  background: var(--wl-accent);
+  color: var(--wl-accent-ink);
+}
+.wl-btn--primary:hover,
+.wl-btn[aria-pressed="true"]:hover,
+.wl-btn.is-active:hover {
+  background: color-mix(in srgb, var(--wl-accent) 86%, white);
+}
+.wl-btn--icon {
+  width: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+.wl-btn--glass {
+  border-color: var(--wl-border);
+  background: var(--wl-glass);
+  -webkit-backdrop-filter: var(--wl-blur);
+  backdrop-filter: var(--wl-blur);
+}
+
+/* ---------- range slider (filled track via --p, kept in sync by wonderlab.js) ---------- */
+.wl-range {
+  --p: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.wl-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--wl-accent) var(--p), rgba(255, 255, 255, 0.16) var(--p));
+}
+.wl-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--wl-accent) 32%, transparent), 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.2s;
+}
+.wl-range:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--wl-accent) 30%, transparent), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+.wl-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.wl-range::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--wl-accent);
+}
+.wl-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--wl-accent) 32%, transparent);
+}
+
+/* ---------- switch (input[type=checkbox].wl-switch) ---------- */
+.wl-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.wl-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: transform 0.22s var(--wl-ease);
+}
+.wl-switch:checked {
+  background: var(--wl-accent);
+}
+.wl-switch:checked::after {
+  transform: translateX(14px);
+}
+
+/* ---------- select ---------- */
+.wl-select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 34px;
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--wl-border-strong);
+  border-radius: var(--wl-radius-sm);
+  background: rgba(255, 255, 255, 0.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='white' stroke-opacity='.7' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center;
+  color: var(--wl-fg);
+  font: 500 13px/1 var(--wl-font);
+  cursor: pointer;
+}
+.wl-select option {
+  background: #12141c;
+  color: #fff;
+}
+
+/* ---------- key caps ---------- */
+.wl-kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 3px 6px;
+  border: 1px solid var(--wl-border-strong);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--wl-fg);
+  font: 600 11px/1 var(--wl-mono);
+  text-align: center;
+}
+
+/* ---------- interaction hint (fades after first interaction) ---------- */
+.wl-hint {
+  position: fixed;
+  left: 50%;
+  bottom: max(24px, calc(env(safe-area-inset-bottom) + 12px));
+  z-index: 900;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  border: 1px solid var(--wl-border);
+  border-radius: 999px;
+  background: var(--wl-glass);
+  -webkit-backdrop-filter: var(--wl-blur);
+  backdrop-filter: var(--wl-blur);
+  color: var(--wl-fg);
+  font: 500 13px/1.3 var(--wl-font);
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity 0.8s var(--wl-ease), transform 0.8s var(--wl-ease), visibility 0.8s;
+}
+.wl-hint.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 10px);
+}
+
+/* ---------- info dialog (<dialog class="wl-dialog">) ---------- */
+.wl-dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(78vh, 720px);
+  padding: 0;
+  border: 1px solid var(--wl-border-strong);
+  border-radius: 18px;
+  background: var(--wl-glass-strong);
+  -webkit-backdrop-filter: var(--wl-blur);
+  backdrop-filter: var(--wl-blur);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  color: var(--wl-fg);
+  font: 400 14.5px/1.6 var(--wl-font);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.wl-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.wl-dialog[open] {
+  animation: wl-dialog-in 0.35s var(--wl-ease);
+}
+.wl-dialog__body {
+  padding: 26px 28px 24px;
+}
+.wl-dialog h2 {
+  margin: 0 0 12px;
+  font: 700 22px/1.2 var(--wl-font-display);
+  letter-spacing: -0.01em;
+}
+.wl-dialog h3 {
+  margin: 20px 0 8px;
+  color: var(--wl-fg-dim);
+  font: 600 11px/1.2 var(--wl-font);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.wl-dialog p {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+.wl-dialog a {
+  color: var(--wl-accent);
+}
+.wl-dialog__close {
+  position: sticky;
+  top: 12px;
+  float: right;
+  margin: 12px 12px 0 0;
+}
+@keyframes wl-dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- utilities ---------- */
+.wl-sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.wl-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #07070c;
+  color: var(--wl-fg);
+  font: 400 15px/1.6 var(--wl-font);
+  text-align: center;
+}
+
+:where(.wl-btn, .wl-home, .wl-range, .wl-switch, .wl-select, .wl-dialog a):focus-visible {
+  outline: 2px solid var(--wl-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wl-ui, .wl-home, .wl-btn, .wl-hint, .wl-switch, .wl-switch::after, .wl-home__arrow {
+    transition-duration: 0.01ms !important;
+  }
+  .wl-dialog[open] {
+    animation: none;
+  }
+}
